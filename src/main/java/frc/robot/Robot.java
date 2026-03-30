@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
   private GameController gameController;
   private SparkMax       driveMotor;
   private SparkMax       turnMotor;
+  private CANcoder       angleEncoder;
   private AHRS           navX;
 
   /**
@@ -51,7 +53,9 @@ public class Robot extends TimedRobot {
     driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    navX = new AHRS();
+    angleEncoder = new CANcoder(32);
+
+    navX         = new AHRS();
   }
 
   /**
@@ -93,6 +97,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Turn Speed", turnMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Drive Speed", driveMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Angle", angleEncoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putData("Gyro", navX);
   }
 
