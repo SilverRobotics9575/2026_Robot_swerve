@@ -13,7 +13,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.NavX.AHRS;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -26,7 +25,7 @@ public class Robot extends TimedRobot {
   private SparkMax       driveMotor;
   private SparkMax       turnMotor;
   private CANcoder       angleEncoder;
-  private AHRS           navX;
+  // private AHRS navX;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,8 +39,8 @@ public class Robot extends TimedRobot {
 
     gameController = new GameController(0);                  // Initialize GameController on port 0
 
-    driveMotor     = new SparkMax(30, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
-    turnMotor      = new SparkMax(31, MotorType.kBrushless);
+    driveMotor     = new SparkMax(40, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
+    turnMotor      = new SparkMax(41, MotorType.kBrushless);
 
     // Configure the speed and turn motors to defaults
     SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
@@ -53,9 +52,9 @@ public class Robot extends TimedRobot {
     driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    angleEncoder = new CANcoder(32);
+    angleEncoder = new CANcoder(42);
 
-    navX         = new AHRS();
+    // navX = new AHRS();
   }
 
   /**
@@ -98,7 +97,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Turn Speed", turnMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Drive Speed", driveMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Angle", angleEncoder.getAbsolutePosition().getValueAsDouble());
-    SmartDashboard.putData("Gyro", navX);
+    // SmartDashboard.putData("Gyro", navX);
   }
 
   /** This function is called once when the robot is disabled. */
