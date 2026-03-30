@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.NavX.AHRS;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
   private GameController gameController;
   private SparkMax       driveMotor;
   private SparkMax       turnMotor;
+  private AHRS           navX;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -48,6 +50,8 @@ public class Robot extends TimedRobot {
 
     driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    navX = new AHRS();
   }
 
   /**
@@ -89,6 +93,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Turn Speed", turnMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Drive Speed", driveMotor.getEncoder().getVelocity());
+    SmartDashboard.putData("Gyro", navX);
   }
 
   /** This function is called once when the robot is disabled. */
