@@ -4,13 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -22,10 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
   private GameController gameController;
-  private SparkMax       driveMotor;
-  private SparkMax       turnMotor;
-  private CANcoder       angleEncoder;
-  // private AHRS navX;
+  private SwerveModule   swerveModule;
+  private SwerveModule   swerveModule2;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,24 +28,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    gameController = new GameController(0);                  // Initialize GameController on port 0
-
-    driveMotor     = new SparkMax(40, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
-    turnMotor      = new SparkMax(41, MotorType.kBrushless);
-
-    // Configure the speed and turn motors to defaults
-    SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
-
-    sparkMaxConfig.inverted(false);
-    sparkMaxConfig.encoder.positionConversionFactor(1);
-    sparkMaxConfig.encoder.velocityConversionFactor(1);
-
-    driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    angleEncoder = new CANcoder(42);
-
-    // navX = new AHRS();
+    gameController = new GameController(0);             // Initialize GameController on port 0
+    swerveModule   = new SwerveModule(40, 41, 42, 53.2);
+    swerveModule2  = new SwerveModule(20, 21, 22, 53.2);
   }
 
   /**
@@ -67,6 +43,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // swerveModule.periodic();
+    swerveModule2.periodic();
+    SmartDashboard.putNumber("DPad", gameController.getPOV());
   }
 
   /** This function is called once when autonomous is enabled. */
@@ -89,15 +68,19 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     double speed = gameController.getLeftY(); // Example: Get left joystick Y-axis value
-    driveMotor.set(speed); // Set motor speed based on joystick input
+    swerveModule.setDriveSpeed(speed);
+    swerveModule2.setDriveSpeed(speed);
 
-    double turn = gameController.getRightX(); // Example: Get right joystick X-axis value
-    turnMotor.set(turn);
+    if (gameController.getPOV() >= 0) {
+      swerveModule.turnToAngle(gameController.getPOV());
+      swerveModule2.turnToAngle(gameController.getPOV());
+    }
+    else {
+      double turn = gameController.getRightX(); // Example: Get right joystick X-axis value
+      swerveModule.setTurnSpeed(turn);
+      swerveModule2.setTurnSpeed(turn);
+    }
 
-    SmartDashboard.putNumber("Turn Speed", turnMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Drive Speed", driveMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Angle", angleEncoder.getAbsolutePosition().getValueAsDouble());
-    // SmartDashboard.putData("Gyro", navX);
   }
 
   /** This function is called once when the robot is disabled. */
