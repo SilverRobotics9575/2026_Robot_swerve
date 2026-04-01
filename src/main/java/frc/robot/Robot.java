@@ -14,9 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  private GameController gameController;
-  private SwerveModule   swerveModule;
-  private SwerveModule   swerveModule2;
+  private SwerveDriveSubsystem swerveDriveSubsystem;
+  private GameController       gameController;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,9 +27,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    gameController = new GameController(0);             // Initialize GameController on port 0
-    swerveModule   = new SwerveModule(40, 41, 42, 53.2);
-    swerveModule2  = new SwerveModule(20, 21, 22, 53.2);
+    gameController       = new GameController(0);     // Initialize GameController on port 0
+    // swerveModule = new SwerveModule(40, 41, 42, 53.2);
+    // swerveModule2 = new SwerveModule(20, 21, 22, 147.0);
+    swerveDriveSubsystem = new SwerveDriveSubsystem();
   }
 
   /**
@@ -43,8 +43,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // swerveModule.periodic();
-    swerveModule2.periodic();
+    swerveDriveSubsystem.periodic();
     SmartDashboard.putNumber("DPad", gameController.getPOV());
   }
 
@@ -67,19 +66,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    double speed = gameController.getLeftY(); // Example: Get left joystick Y-axis value
-    swerveModule.setDriveSpeed(speed);
-    swerveModule2.setDriveSpeed(speed);
-
-    if (gameController.getPOV() >= 0) {
-      swerveModule.turnToAngle(gameController.getPOV());
-      swerveModule2.turnToAngle(gameController.getPOV());
-    }
-    else {
-      double turn = gameController.getRightX(); // Example: Get right joystick X-axis value
-      swerveModule.setTurnSpeed(turn);
-      swerveModule2.setTurnSpeed(turn);
-    }
+    swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
+      gameController.getRightX());
 
   }
 

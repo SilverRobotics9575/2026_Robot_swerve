@@ -9,6 +9,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,13 +27,14 @@ public class SwerveModule {
   private SparkMax            turnMotor;
   private CANcoder            angleEncoder;
   private double              angleEncoderOffset;
+  private String              moduleName;
   // private AHRS navX;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  public SwerveModule(int driveMotorCanId, int turnMotorCanId, int encoderCanId, double angleOffset) {
+  public SwerveModule(String moduleName, int driveMotorCanId, int turnMotorCanId, int encoderCanId, double angleOffset) {
 
     driveMotor = new SparkMax(driveMotorCanId, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
     turnMotor  = new SparkMax(turnMotorCanId, MotorType.kBrushless);
@@ -41,14 +43,17 @@ public class SwerveModule {
     SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
 
     sparkMaxConfig.inverted(false);
+    sparkMaxConfig.idleMode(IdleMode.kBrake);
     sparkMaxConfig.encoder.positionConversionFactor(1);
     sparkMaxConfig.encoder.velocityConversionFactor(1);
 
     driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     angleEncoder            = new CANcoder(encoderCanId);
 
+    this.moduleName         = moduleName;
     this.angleEncoderOffset = angleOffset;
   }
 
@@ -91,10 +96,8 @@ public class SwerveModule {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Turn Speed", turnMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Drive Speed", driveMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Angle", getAngle());
-    // SmartDashboard.putData("Gyro", navX);
-
+    SmartDashboard.putNumber(moduleName + " Turn Speed", turnMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber(moduleName + " Drive Speed", driveMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber(moduleName + " Angle", getAngle());
   }
 }
