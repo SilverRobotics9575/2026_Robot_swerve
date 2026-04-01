@@ -69,6 +69,8 @@ public class Robot extends TimedRobot {
     swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
       gameController.getRightX());
 
+    swerveDriveSubsystem.clam(gameController.getRightBumperButton(), gameController.getRightX());
+
   }
 
   /** This function is called once when the robot is disabled. */

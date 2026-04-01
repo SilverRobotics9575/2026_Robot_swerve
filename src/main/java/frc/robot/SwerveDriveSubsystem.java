@@ -93,4 +93,23 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     setDriveSpeed(speed);
   }
 
+
+  public void clam(boolean clam, double omega) {
+    if (clam) {
+      frontRight.turnToAngle(135);
+      frontLeft.turnToAngle(45);
+      backRight.turnToAngle(225);
+      backLeft.turnToAngle(315);
+
+      frontRight.setDriveSpeed(omega);
+      backLeft.setDriveSpeed(omega);
+      backRight.setDriveSpeed(omega);
+      frontLeft.setDriveSpeed(omega);
+
+    }
+    else {
+      // do nothing
+    }
+  }
+
 }
