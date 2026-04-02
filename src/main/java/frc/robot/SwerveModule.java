@@ -21,83 +21,83 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class SwerveModule {
 
-  private static final double Kp = 1 / 90.0;
+    private static final double Kp = 1 / 90.0;
 
-  private SparkMax            driveMotor;
-  private SparkMax            turnMotor;
-  private CANcoder            angleEncoder;
-  private double              angleEncoderOffset;
-  private String              moduleName;
-  // private AHRS navX;
+    private SparkMax            driveMotor;
+    private SparkMax            turnMotor;
+    private CANcoder            angleEncoder;
+    private double              angleEncoderOffset;
+    private String              moduleName;
+    // private AHRS navX;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  public SwerveModule(String moduleName, int driveMotorCanId, int turnMotorCanId, int encoderCanId, double angleOffset) {
+    /**
+     * This function is run when the robot is first started up and should be used for any
+     * initialization code.
+     */
+    public SwerveModule(String moduleName, int driveMotorCanId, int turnMotorCanId, int encoderCanId, double angleOffset) {
 
-    driveMotor = new SparkMax(driveMotorCanId, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
-    turnMotor  = new SparkMax(turnMotorCanId, MotorType.kBrushless);
+        driveMotor = new SparkMax(driveMotorCanId, MotorType.kBrushless); // Initialize SparkMax on port 30 for NEO motor
+        turnMotor  = new SparkMax(turnMotorCanId, MotorType.kBrushless);
 
-    // Configure the speed and turn motors to defaults
-    SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
+        // Configure the speed and turn motors to defaults
+        SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
 
-    sparkMaxConfig.inverted(false);
-    sparkMaxConfig.idleMode(IdleMode.kBrake);
-    sparkMaxConfig.encoder.positionConversionFactor(1);
-    sparkMaxConfig.encoder.velocityConversionFactor(1);
+        sparkMaxConfig.inverted(false);
+        sparkMaxConfig.idleMode(IdleMode.kBrake);
+        sparkMaxConfig.encoder.positionConversionFactor(1);
+        sparkMaxConfig.encoder.velocityConversionFactor(1);
 
-    driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        driveMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        turnMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    angleEncoder            = new CANcoder(encoderCanId);
+        angleEncoder            = new CANcoder(encoderCanId);
 
-    this.moduleName         = moduleName;
-    this.angleEncoderOffset = angleOffset;
-  }
-
-  public void setDriveSpeed(double speed) {
-    driveMotor.set(speed);
-  }
-
-  public void setTurnSpeed(double speed) {
-    turnMotor.set(speed);
-  }
-
-  public double getAngle() {
-
-    double angle = -angleEncoder.getAbsolutePosition().getValueAsDouble() * 360;
-
-    // add offset
-    angle += angleEncoderOffset;
-
-    angle %= 360.0d;
-    if (angle < 0) {
-      angle += 360;
+        this.moduleName         = moduleName;
+        this.angleEncoderOffset = angleOffset;
     }
-    return angle;
-  }
 
-  public void turnToAngle(double setPointAngle) {
-
-    double speed = 0;
-
-    double error = setPointAngle - getAngle();
-
-    if (error > 180) {
-      error -= 360;
+    public void setDriveSpeed(double speed) {
+        driveMotor.set(speed);
     }
-    if (error < -180) {
-      error += 360;
-    }
-    speed = error * Kp;
-    turnMotor.set(speed);
-  }
 
-  public void periodic() {
-    SmartDashboard.putNumber(moduleName + " Turn Speed", turnMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber(moduleName + " Drive Speed", driveMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber(moduleName + " Angle", getAngle());
-  }
+    public void setTurnSpeed(double speed) {
+        turnMotor.set(speed);
+    }
+
+    public double getAngle() {
+
+        double angle = -angleEncoder.getAbsolutePosition().getValueAsDouble() * 360;
+
+        // add offset
+        angle += angleEncoderOffset;
+
+        angle %= 360.0d;
+        if (angle < 0) {
+            angle += 360;
+        }
+        return angle;
+    }
+
+    public void turnToAngle(double setPointAngle) {
+
+        double speed = 0;
+
+        double error = setPointAngle - getAngle();
+
+        if (error > 180) {
+            error -= 360;
+        }
+        if (error < -180) {
+            error += 360;
+        }
+        speed = error * Kp;
+        turnMotor.set(speed);
+    }
+
+    public void periodic() {
+        SmartDashboard.putNumber(moduleName + " Turn Speed", turnMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber(moduleName + " Drive Speed", driveMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber(moduleName + " Angle", getAngle());
+    }
 }

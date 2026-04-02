@@ -14,93 +14,93 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  private SwerveDriveSubsystem swerveDriveSubsystem;
-  private GameController       gameController;
+    private SwerveDriveSubsystem swerveDriveSubsystem;
+    private GameController       gameController;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  public Robot() {
-  }
+    /**
+     * This function is run when the robot is first started up and should be used for any
+     * initialization code.
+     */
+    public Robot() {
+    }
 
-  @Override
-  public void robotInit() {
+    @Override
+    public void robotInit() {
 
-    gameController       = new GameController(0);     // Initialize GameController on port 0
-    // swerveModule = new SwerveModule(40, 41, 42, 53.2);
-    // swerveModule2 = new SwerveModule(20, 21, 22, 147.0);
-    swerveDriveSubsystem = new SwerveDriveSubsystem();
-  }
+        gameController       = new GameController(0);     // Initialize GameController on port 0
+        // swerveModule = new SwerveModule(40, 41, 42, 53.2);
+        // swerveModule2 = new SwerveModule(20, 21, 22, 147.0);
+        swerveDriveSubsystem = new SwerveDriveSubsystem();
+    }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>
-   * This runs AFTER the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    swerveDriveSubsystem.periodic();
-    SmartDashboard.putNumber("DPad", gameController.getPOV());
-  }
+    /**
+     * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+     * that you want ran during disabled, autonomous, teleoperated and test.
+     *
+     * <p>
+     * This runs AFTER the mode specific periodic functions, but before LiveWindow and
+     * SmartDashboard integrated updating.
+     */
+    @Override
+    public void robotPeriodic() {
+        swerveDriveSubsystem.periodic();
+        SmartDashboard.putNumber("DPad", gameController.getPOV());
+    }
 
-  /** This function is called once when autonomous is enabled. */
-  @Override
-  public void autonomousInit() {
-  }
+    /** This function is called once when autonomous is enabled. */
+    @Override
+    public void autonomousInit() {
+    }
 
-  /** This function is called periodically during autonomous. */
-  @Override
-  public void autonomousPeriodic() {
-  }
+    /** This function is called periodically during autonomous. */
+    @Override
+    public void autonomousPeriodic() {
+    }
 
-  /** This function is called once when teleop is enabled. */
-  @Override
-  public void teleopInit() {
-  }
+    /** This function is called once when teleop is enabled. */
+    @Override
+    public void teleopInit() {
+    }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {
+    /** This function is called periodically during operator control. */
+    @Override
+    public void teleopPeriodic() {
 
-    swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
-      gameController.getRightX());
+        swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
+            gameController.getRightX());
 
-    swerveDriveSubsystem.clam(gameController.getRightBumperButton(), gameController.getRightX());
+        swerveDriveSubsystem.clam(gameController.getRightBumperButton(), gameController.getRightX());
 
-  }
+    }
 
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {
-  }
+    /** This function is called once when the robot is disabled. */
+    @Override
+    public void disabledInit() {
+    }
 
-  /** This function is called periodically when disabled. */
-  @Override
-  public void disabledPeriodic() {
-  }
+    /** This function is called periodically when disabled. */
+    @Override
+    public void disabledPeriodic() {
+    }
 
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {
-  }
+    /** This function is called once when test mode is enabled. */
+    @Override
+    public void testInit() {
+    }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {
-  }
+    /** This function is called periodically during test mode. */
+    @Override
+    public void testPeriodic() {
+    }
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {
-  }
+    /** This function is called once when the robot is first started up. */
+    @Override
+    public void simulationInit() {
+    }
 
-  /** This function is called periodically whilst in simulation. */
-  @Override
-  public void simulationPeriodic() {
-  }
+    /** This function is called periodically whilst in simulation. */
+    @Override
+    public void simulationPeriodic() {
+    }
 
 }
