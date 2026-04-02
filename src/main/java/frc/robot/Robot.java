@@ -66,6 +66,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
+        // FIXME the swerve drive() method and clam() method will fight each other
+        // which one takes priority? can we use an if/else construct?
+
         swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
             gameController.getRightX());
 

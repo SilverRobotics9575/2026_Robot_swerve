@@ -95,6 +95,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
 
     public void clam(boolean clam, double omega) {
+
+        // FIXME If the clam is active, should the drive speed be zero?
+
         if (clam) {
             frontRight.turnToAngle(135);
             frontLeft.turnToAngle(45);
