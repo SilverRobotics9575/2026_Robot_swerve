@@ -90,6 +90,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         double speed = Math.pow(x * x + y * y, .5);
 
+        // FIXME speed should be limited to the range +/-1.0. The above
+        // equation could end up with a max speed of sqrt(2).
+
+        // TODO idea - is it better to drive backwards when theta is
+        // in the range 90-270 deg? Point in the range +/-90 deg and drive forwards or backwards?
+
         setDriveSpeed(speed);
     }
 
