@@ -88,10 +88,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             setTurnSpeed(0);
         }
 
-        double speed = Math.pow(x * x + y * y, .5);
-
-        // FIXME speed should be limited to the range +/-1.0. The above
-        // equation could end up with a max speed of sqrt(2).
+        double speed = (Math.pow(x * x + y * y, .5)) % 1.0;
 
         setDriveSpeed(speed);
     }
@@ -100,6 +97,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public void clam(boolean clam, double omega) {
 
         // FIXME If the clam is active, should the drive speed be zero?
+        // If clam is active, drive speed is given by the right stick
+        // This allows the robot to spin in place, (also currently the only way to spin)
 
         if (clam) {
             frontRight.turnToAngle(135);
