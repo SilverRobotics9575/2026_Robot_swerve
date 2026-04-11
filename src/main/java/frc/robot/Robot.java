@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
     private SwerveDriveSubsystem swerveDriveSubsystem;
+    private ClimbSubsystem       climbSubsystem;
     private GameController       gameController;
 
     /**
@@ -74,7 +75,15 @@ public class Robot extends TimedRobot {
                 gameController.getRightX());
         }
 
-
+        if (gameController.getPOV() == 0) {
+            climbSubsystem.setSpeed(.2);
+        }
+        else if (gameController.getPOV() == 180) {
+            climbSubsystem.setSpeed(-.2);
+        }
+        else {
+            climbSubsystem.setSpeed(0);
+        }
     }
 
     /** This function is called once when the robot is disabled. */

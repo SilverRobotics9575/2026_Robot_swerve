@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -18,15 +22,17 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private SwerveModule backRight;
     private SwerveModule backLeft;
 
+    private AHRS         navX = new AHRS(NavXComType.kMXP_SPI);
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     public SwerveDriveSubsystem() {
-        frontLeft  = new SwerveModule("FL", 10, 11, 12, 18.5);
-        frontRight = new SwerveModule("FR", 20, 21, 22, 147.0);
-        backLeft   = new SwerveModule("BL", 30, 31, 32, 129.6);
-        backRight  = new SwerveModule("BR", 40, 41, 42, 53.2);
+        frontLeft  = new SwerveModule("FL", 10, 11, 12, 59.2);
+        frontRight = new SwerveModule("FR", 20, 21, 22, 125.5);
+        backLeft   = new SwerveModule("BL", 30, 31, 32, 145.5);
+        backRight  = new SwerveModule("BR", 40, 41, 42, 16.9);
     }
 
     /**
@@ -43,6 +49,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         frontLeft.periodic();
         backRight.periodic();
         backLeft.periodic();
+
+        SmartDashboard.putData("Gyro", navX);
     }
 
     private void setTurnSpeed(double speed) {
