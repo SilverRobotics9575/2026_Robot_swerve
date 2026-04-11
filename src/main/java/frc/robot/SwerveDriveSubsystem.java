@@ -23,10 +23,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * initialization code.
      */
     public SwerveDriveSubsystem() {
-        frontLeft  = new SwerveModule("FL", 10, 11, 12, 18.5);
-        frontRight = new SwerveModule("FR", 20, 21, 22, 147.0);
-        backLeft   = new SwerveModule("BL", 30, 31, 32, 129.6);
-        backRight  = new SwerveModule("BR", 40, 41, 42, 53.2);
+        frontLeft  = new SwerveModule("FL", 10, 11, 12, 52.2);
+        frontRight = new SwerveModule("FR", 20, 21, 22, 129.6);
+        backLeft   = new SwerveModule("BL", 30, 31, 32, 147.0);
+        backRight  = new SwerveModule("BR", 40, 41, 42, 18.5);
     }
 
     /**
@@ -96,7 +96,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public void clam(boolean clam, double omega) {
 
-        // FIXME If the clam is active, should the drive speed be zero?
         // If clam is active, drive speed is given by the right stick
         // This allows the robot to spin in place, (also currently the only way to spin)
 
