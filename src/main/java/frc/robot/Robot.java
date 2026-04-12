@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
         // swerveModule = new SwerveModule(40, 41, 42, 53.2);
         // swerveModule2 = new SwerveModule(20, 21, 22, 147.0);
         swerveDriveSubsystem = new SwerveDriveSubsystem();
+        climbSubsystem       = new ClimbSubsystem();
     }
 
     /**
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         swerveDriveSubsystem.periodic();
+        climbSubsystem.periodic();
         SmartDashboard.putNumber("DPad", gameController.getPOV());
     }
 
@@ -76,14 +78,25 @@ public class Robot extends TimedRobot {
         }
 
         if (gameController.getPOV() == 0) {
-            climbSubsystem.setSpeed(.2);
+            climbSubsystem.setLeftSpeed(1);
         }
         else if (gameController.getPOV() == 180) {
-            climbSubsystem.setSpeed(-.2);
+            climbSubsystem.setLeftSpeed(-1);
         }
         else {
-            climbSubsystem.setSpeed(0);
+            climbSubsystem.setLeftSpeed(0);
         }
+
+        if (gameController.getPOV() == 270) {
+            climbSubsystem.setRightSpeed(1);
+        }
+        else if (gameController.getPOV() == 90) {
+            climbSubsystem.setRightSpeed(-1);
+        }
+        else {
+            climbSubsystem.setRightSpeed(0);
+        }
+
     }
 
     /** This function is called once when the robot is disabled. */

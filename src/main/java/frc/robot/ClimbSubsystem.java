@@ -42,6 +42,9 @@ public class ClimbSubsystem extends SubsystemBase {
 
         sparkMaxConfig.inverted(true);
         rightMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        leftMotor.getEncoder().setPosition(0);
+        rightMotor.getEncoder().setPosition(0);
     }
 
     /**
@@ -60,7 +63,20 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
+        setLeftSpeed(speed);
+        setRightSpeed(speed);
+    }
+
+    public void setLeftSpeed(double speed) {
         leftMotor.set(speed);
+    }
+
+    public void setRightSpeed(double speed) {
         rightMotor.set(speed);
+    }
+
+    public void resetEncoders() {
+        leftMotor.getEncoder().setPosition(0);
+        rightMotor.getEncoder().setPosition(0);
     }
 }
