@@ -17,22 +17,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class SwerveDriveSubsystem extends SubsystemBase {
 
-    private SwerveModule frontRight;
-    private SwerveModule frontLeft;
-    private SwerveModule backRight;
-    private SwerveModule backLeft;
+    // 4 inch wheels with a drive gear ratio of 6.75:1
+    private static final double DRIVE_INCHES_PER_ENCODER_COUNT = Math.PI * 4.0 / 6.75;
 
-    private AHRS         navX = new AHRS(NavXComType.kMXP_SPI);
+    private SwerveModule        frontRight;
+    private SwerveModule        frontLeft;
+    private SwerveModule        backRight;
+    private SwerveModule        backLeft;
+
+    private AHRS                navX                           = new AHRS(NavXComType.kMXP_SPI);
+
+    double                      gyroOffset                     = 0;
 
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     public SwerveDriveSubsystem() {
-        frontLeft  = new SwerveModule("FL", 10, 11, 12, 59.2+180);
-        frontRight = new SwerveModule("FR", 20, 21, 22, 125.5+180);
-        backLeft   = new SwerveModule("BL", 30, 31, 32, 145.5+180);
-        backRight  = new SwerveModule("BR", 40, 41, 42, 16.9+180);
+        frontLeft  = new SwerveModule("FL", 10, 11, 12, 59.2 + 180);
+        frontRight = new SwerveModule("FR", 20, 21, 22, 125.5 + 180);
+        backLeft   = new SwerveModule("BL", 30, 31, 32, 145.5 + 180);
+        backRight  = new SwerveModule("BR", 40, 41, 42, 16.9 + 180);
     }
 
     /**
@@ -51,6 +56,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.periodic();
 
         SmartDashboard.putData("Gyro", navX);
+        SmartDashboard.putNumber("SwerveDistance (in)", getDistanceInches());
     }
 
     private void setTurnSpeed(double speed) {
@@ -115,14 +121,57 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             backLeft.turnToAngle(315);
 
             frontRight.setDriveSpeed(omega);
+            frontLeft.setDriveSpeed(omega);
             backLeft.setDriveSpeed(omega);
             backRight.setDriveSpeed(omega);
-            frontLeft.setDriveSpeed(omega);
 
         }
         else {
             // do nothing
         }
+    }
+
+    public void setGyroAngle(double angle) {
+
+        gyroOffset = 0;
+        gyroOffset = -getGyroAngle() + angle;
+    }
+
+    public double getGyroAngle() {
+
+        double angle = navX.getAngle() + gyroOffset;
+
+        angle %= 360;
+
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        return angle;
+    }
+
+    public double getDistanceInches() {
+        return (frontLeft.getDistance()
+            + frontRight.getDistance()
+            + backLeft.getDistance()
+            + backRight.getDistance())
+            / 4.0
+            * DRIVE_INCHES_PER_ENCODER_COUNT;
+    }
+
+    public void resetDistanceEncoders() {
+
+        frontLeft.resetDistanceEncoder();
+        frontRight.resetDistanceEncoder();
+        backLeft.resetDistanceEncoder();
+        backRight.resetDistanceEncoder();
+    }
+
+    public void setWheelAngle(double angle) {
+        frontRight.turnToAngle(angle);
+        frontLeft.turnToAngle(angle);
+        backRight.turnToAngle(angle);
+        backLeft.turnToAngle(angle);
     }
 
 }

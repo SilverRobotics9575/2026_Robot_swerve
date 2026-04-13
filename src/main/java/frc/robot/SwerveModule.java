@@ -21,14 +21,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class SwerveModule {
 
-    private static final double Kp = 1 / 90.0;
+    private static final double Kp             = 1 / 90.0;
 
     private SparkMax            driveMotor;
     private SparkMax            turnMotor;
     private CANcoder            angleEncoder;
     private double              angleEncoderOffset;
     private String              moduleName;
-    // private AHRS navX;
+
+    private double              distanceOffset = 0;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -95,9 +96,19 @@ public class SwerveModule {
         turnMotor.set(speed);
     }
 
+    public double getDistance() {
+        return driveMotor.getEncoder().getPosition() + distanceOffset;
+    }
+
+    public void resetDistanceEncoder() {
+        distanceOffset = -driveMotor.getEncoder().getPosition();
+    }
+
     public void periodic() {
         SmartDashboard.putNumber(moduleName + " Turn Speed", turnMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber(moduleName + " Drive Speed", driveMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber(moduleName + " Drive Distance", getDistance());
         SmartDashboard.putNumber(moduleName + " Angle", getAngle());
     }
+
 }

@@ -49,4 +49,32 @@ public class GameController extends XboxController {
 
         return (FAST_M * Math.abs(rawAxisValue) + FAST_B) * Math.signum(rawAxisValue);
     }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append('(').append(round(getLeftX())).append(',').append(round(getLeftY())).append(')');
+        sb.append(' ');
+        sb.append('(').append(round(getRightX())).append(',').append(round(getRightY())).append(')');
+        sb.append(' ');
+        sb.append('[').append(round(getLeftTriggerAxis())).append(',').append(round(getRightTriggerAxis())).append(']');
+        sb.append(' ');
+        sb.append(getStartButton() ? "Start " : "");
+        sb.append(getBackButton() ? "Back " : "");
+        sb.append(getPOV() >= 0 ? "POV(" + getPOV() + ") " : "");
+        sb.append(getAButton() ? "A" : "");
+        sb.append(getBButton() ? "B" : "");
+        sb.append(getXButton() ? "X" : "");
+        sb.append(getYButton() ? "Y" : "");
+        sb.append(getLeftBumperButton() ? "Lb" : "");
+        sb.append(getLeftBumperButton() ? "Rb" : "");
+
+        return sb.toString();
+    }
+
+    private double round(double value) {
+        return Math.round(value * 100) / 100.0d;
+    }
 }

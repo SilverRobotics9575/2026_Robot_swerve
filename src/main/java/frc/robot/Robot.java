@@ -16,7 +16,10 @@ public class Robot extends TimedRobot {
 
     private SwerveDriveSubsystem swerveDriveSubsystem;
     private ClimbSubsystem       climbSubsystem;
-    private GameController       gameController;
+    private HopperSubsystem      hopperSubsystem;
+    private GameController       driverController;
+    private GameController       operatorController;
+    private AutoCommand          autoCommand;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -28,11 +31,15 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
 
-        gameController       = new GameController(0);     // Initialize GameController on port 0
-        // swerveModule = new SwerveModule(40, 41, 42, 53.2);
-        // swerveModule2 = new SwerveModule(20, 21, 22, 147.0);
+        driverController     = new GameController(0);
+        operatorController   = new GameController(0);
+
         swerveDriveSubsystem = new SwerveDriveSubsystem();
         climbSubsystem       = new ClimbSubsystem();
+        hopperSubsystem      = new HopperSubsystem();
+
+        autoCommand          = new AutoCommand(swerveDriveSubsystem, hopperSubsystem, climbSubsystem);
+
     }
 
     /**
@@ -47,17 +54,20 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         swerveDriveSubsystem.periodic();
         climbSubsystem.periodic();
-        SmartDashboard.putNumber("DPad", gameController.getPOV());
+        SmartDashboard.putString("Driver", driverController.toString());
+        SmartDashboard.putString("Operator", operatorController.toString());
     }
 
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        autoCommand.init();
     }
 
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
+        autoCommand.periodic();
     }
 
     /** This function is called once when teleop is enabled. */
@@ -69,34 +79,56 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
-        if (gameController.getRightBumperButton()) {
-            swerveDriveSubsystem.clam(gameController.getRightBumperButton(), gameController.getRightX());
+        /*
+         * Swerve Drive
+         */
+        if (driverController.getRightBumperButton()) {
+            swerveDriveSubsystem.clam(driverController.getRightBumperButton(), driverController.getRightX());
         }
         else {
-            swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
-                gameController.getRightX());
+            swerveDriveSubsystem.drive(
+                driverController.getLeftX(),
+                driverController.getLeftY(),
+                driverController.getRightX());
         }
 
-        if (gameController.getPOV() == 0) {
-            climbSubsystem.setLeftSpeed(1);
+        /*
+         * Climb
+         */
+        // Run the motors together
+        if (driverController.getYButton()) {
+            climbSubsystem.setSpeed(1.0);
         }
-        else if (gameController.getPOV() == 180) {
-            climbSubsystem.setLeftSpeed(-1);
+        else if (driverController.getAButton()) {
+            climbSubsystem.setSpeed(-1.0);
         }
         else {
-            climbSubsystem.setLeftSpeed(0);
+            // Drive the climbs independently using the POV
+            if (driverController.getPOV() == 0) {
+                climbSubsystem.setLeftSpeed(1.0);
+            }
+            else if (driverController.getPOV() == 180) {
+                climbSubsystem.setLeftSpeed(-1.0);
+            }
+            else {
+                climbSubsystem.setLeftSpeed(0);
+            }
+
+            if (driverController.getPOV() == 270) {
+                climbSubsystem.setRightSpeed(1.0);
+            }
+            else if (driverController.getPOV() == 90) {
+                climbSubsystem.setRightSpeed(-1.0);
+            }
+            else {
+                climbSubsystem.setRightSpeed(0);
+            }
         }
 
-        if (gameController.getPOV() == 270) {
-            climbSubsystem.setRightSpeed(1);
-        }
-        else if (gameController.getPOV() == 90) {
-            climbSubsystem.setRightSpeed(-1);
-        }
-        else {
-            climbSubsystem.setRightSpeed(0);
-        }
-
+        /*
+         * Hopper Controls
+         */
+        hopperSubsystem.setBeltSpeed(kDefaultPeriod);
     }
 
     /** This function is called once when the robot is disabled. */
