@@ -65,13 +65,17 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
+        // js call the climb subsystem
+        climberSubsystem.climb(gameController.getLeftTriggerAxis(), gameController.getRightTriggerAxis(),
+            gameController.getBButton());
 
+        // what part of the drive subsystem to call
         if (gameController.getRightBumperButton()) {
             swerveDriveSubsystem.clam(gameController.getRightBumperButton(), gameController.getRightX());
         }
         else {
             swerveDriveSubsystem.drive(gameController.getLeftX(), gameController.getLeftY(),
-                gameController.getRightX());
+                gameController.getRightX(), gameController.getAButton());
         }
 
 

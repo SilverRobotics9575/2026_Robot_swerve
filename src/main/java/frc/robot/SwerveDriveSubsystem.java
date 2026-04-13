@@ -66,9 +66,16 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.turnToAngle(heading);
     }
 
-    public void drive(double x, double y, double omega) {
+    public void drive(double x, double y, double omega, boolean angleLock) {
 
-        if (!(x == 0 && y == 0)) {
+        double speed;
+
+        if (angleLock) {
+            setTurnSpeed(0);
+            speed = y;
+            setDriveSpeed(speed);
+        }
+        else if (!(x == 0 && y == 0)) {
 
             double theta   = Math.atan2(y, x);
             double heading = 90 - theta * 180 / Math.PI;
@@ -83,14 +90,15 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             turnToAngle(heading);
 
+            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
+            setDriveSpeed(speed);
         }
         else {
             setTurnSpeed(0);
+            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
+            setDriveSpeed(speed);
         }
 
-        double speed = (Math.pow(x * x + y * y, .5)) % 1.0;
-
-        setDriveSpeed(speed);
     }
 
 
@@ -105,10 +113,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             backRight.turnToAngle(225);
             backLeft.turnToAngle(315);
 
-            frontRight.setDriveSpeed(omega);
-            backLeft.setDriveSpeed(omega);
-            backRight.setDriveSpeed(omega);
-            frontLeft.setDriveSpeed(omega);
+            setDriveSpeed(omega);
 
         }
         else {
