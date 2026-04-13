@@ -60,6 +60,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Left Climb", leftMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("Right Climb", rightMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Climb Position (in)", getClimbPositionInches());
+    }
+
+    public double getClimbPositionInches() {
+        return Math.PI * 0.5 * 0.01 * (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getPosition()) / 2.0;
     }
 
     public void setSpeed(double speed) {

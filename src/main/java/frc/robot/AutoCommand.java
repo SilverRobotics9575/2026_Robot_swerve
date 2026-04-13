@@ -22,7 +22,7 @@ public class AutoCommand {
     }
 
     private enum Step {
-        ALIGN_WHEELS, WAIT;
+        ALIGN_WHEELS, WAIT, MOVE_TO_SHOOT, SHOOT, MOVE_TO_CLIMB, CLIMB, DONE;
     };
 
     public AutoCommand(SwerveDriveSubsystem swerveDriveSubsystem, HopperSubsystem hopperSubsystem,
@@ -55,12 +55,13 @@ public class AutoCommand {
          */
         swerveDriveSubsystem.setGyroAngle(0);
         swerveDriveSubsystem.resetDistanceEncoders();
+        climbSubsystem.resetEncoders();
 
         autoPattern = autoPatternChooser.getSelected();
         waitTime    = waitTimeChooser.getSelected();
 
         // Initial state is always to align the wheels to 180 for 1/2 second.
-        goToStep(Step.ALIGN_WHEELS);
+        nextStep(Step.ALIGN_WHEELS);
     }
 
     public void periodic() {
@@ -70,6 +71,11 @@ public class AutoCommand {
          * "active" until the state changes and will be called every
          * 20ms in auto
          */
+
+        if (autoPattern == AutoPattern.DO_NOTHING) {
+            return;
+        }
+
         switch (step) {
 
         case ALIGN_WHEELS:
@@ -78,7 +84,7 @@ public class AutoCommand {
             swerveDriveSubsystem.setWheelAngle(180);
 
             if (stepTimer.hasElapsed(0.5)) {
-                goToStep(Step.WAIT);
+                nextStep(Step.WAIT);
             }
 
             return;
@@ -87,13 +93,81 @@ public class AutoCommand {
 
             // If there is a wait, then wait for the prescribed time.
             if (stepTimer.hasElapsed(waitTime)) {
-                stepTimer.restart();
+
+                if (autoPattern == AutoPattern.CLIMB_ONLY) {
+                    nextStep(Step.MOVE_TO_CLIMB);
+                }
+                else {
+                    nextStep(Step.MOVE_TO_SHOOT);
+                }
+
             }
+            return;
+
+        case MOVE_TO_SHOOT:
+            swerveDriveSubsystem.setDriveSpeed(0.2);
+
+            if (Math.abs(swerveDriveSubsystem.getDistanceInches()) >= 20) {
+                swerveDriveSubsystem.setDriveSpeed(0);
+                nextStep(Step.SHOOT);
+            }
+
+            return;
+
+        case SHOOT:
+            hopperSubsystem.setShooterSpeed(1.0);
+            if (stepTimer.hasElapsed(0.5)) {
+                hopperSubsystem.setBeltSpeed(1);
+            }
+            if (stepTimer.hasElapsed(10)) {
+                hopperSubsystem.setBeltSpeed(0);
+                hopperSubsystem.setShooterSpeed(0);
+                if (autoPattern == AutoPattern.SHOOT_AND_CLIMB) {
+                    nextStep(Step.CLIMB);
+                }
+                else {
+                    nextStep(Step.DONE);
+                }
+            }
+            return;
+
+        case MOVE_TO_CLIMB:
+
+            if (swerveDriveSubsystem.getDistanceInches() >= 30) {
+                swerveDriveSubsystem.setDriveSpeed(0);
+            }
+            else {
+                swerveDriveSubsystem.setDriveSpeed(0.2);
+            }
+
+            if (climbSubsystem.getClimbPositionInches() >= 10) {
+                climbSubsystem.setSpeed(0);
+            }
+            else {
+                climbSubsystem.setSpeed(.8);
+            }
+
+            if (swerveDriveSubsystem.getDistanceInches() >= 30
+                && climbSubsystem.getClimbPositionInches() >= 10) {
+                nextStep(Step.CLIMB);
+            }
+            return;
+
+        case CLIMB:
+            climbSubsystem.setSpeed(-0.8);
+            if (climbSubsystem.getClimbPositionInches() <= 8) {
+                climbSubsystem.setSpeed(0);
+                nextStep(Step.DONE);
+            }
+            return;
+
+        case DONE:
+            // Do nothing, we are done with auto.
             return;
         }
     }
 
-    private void goToStep(Step step) {
+    private void nextStep(Step step) {
         this.step = step;
         stepTimer.restart();
     }

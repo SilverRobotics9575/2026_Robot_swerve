@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         swerveDriveSubsystem.periodic();
         climbSubsystem.periodic();
+        hopperSubsystem.periodic();
+
         SmartDashboard.putString("Driver", driverController.toString());
         SmartDashboard.putString("Operator", operatorController.toString());
     }
@@ -83,13 +85,14 @@ public class Robot extends TimedRobot {
          * Swerve Drive
          */
         if (driverController.getRightBumperButton()) {
-            swerveDriveSubsystem.clam(driverController.getRightBumperButton(), driverController.getRightX());
+            swerveDriveSubsystem.clam();
         }
         else {
             swerveDriveSubsystem.drive(
                 driverController.getLeftX(),
                 driverController.getLeftY(),
-                driverController.getRightX());
+                driverController.getRightX(),
+                driverController.getBButton());
         }
 
         /*

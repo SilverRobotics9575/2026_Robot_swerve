@@ -66,7 +66,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.setTurnSpeed(speed);
     }
 
-    private void setDriveSpeed(double speed) {
+    public void setDriveSpeed(double speed) {
         frontRight.setDriveSpeed(speed);
         frontLeft.setDriveSpeed(speed);
         backRight.setDriveSpeed(speed);
@@ -80,7 +80,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.turnToAngle(heading);
     }
 
-    public void drive(double x, double y, double omega) {
+    public void drive(double x, double y, double omega, boolean angleLock) {
+
+        double speed;
 
         if (!(x == 0 && y == 0)) {
 
@@ -97,38 +99,42 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             turnToAngle(heading);
 
+            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
+            setDriveSpeed(speed);
         }
-        else {
-            setTurnSpeed(0);
-        }
-
-        double speed = (Math.pow(x * x + y * y, .5)) % 1.0;
-
-        setDriveSpeed(speed);
-    }
-
-
-    public void clam(boolean clam, double omega) {
-
-        // FIXME If the clam is active, should the drive speed be zero?
-        // If clam is active, drive speed is given by the right stick
-        // This allows the robot to spin in place, (also currently the only way to spin)
-
-        if (clam) {
+        else if (omega != 0) {
             frontRight.turnToAngle(135);
             frontLeft.turnToAngle(45);
             backRight.turnToAngle(225);
             backLeft.turnToAngle(315);
 
-            frontRight.setDriveSpeed(omega);
-            frontLeft.setDriveSpeed(omega);
-            backLeft.setDriveSpeed(omega);
-            backRight.setDriveSpeed(omega);
-
+            setDriveSpeed(omega);
+        }
+        else if (angleLock) {
+            setTurnSpeed(0);
+            speed = y;
         }
         else {
-            // do nothing
+            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
+            setDriveSpeed(speed);
         }
+    }
+
+
+    public void clam() {
+
+        // FIXME If the clam is active, should the drive speed be zero?
+        // If clam is active, drive speed is given by the right stick
+        // This allows the robot to spin in place, (also currently the only way to spin)
+
+        frontRight.turnToAngle(225);
+        frontLeft.turnToAngle(135);
+        backRight.turnToAngle(315);
+        backLeft.turnToAngle(45);
+
+        setDriveSpeed(0);
+
+
     }
 
     public void setGyroAngle(double angle) {
