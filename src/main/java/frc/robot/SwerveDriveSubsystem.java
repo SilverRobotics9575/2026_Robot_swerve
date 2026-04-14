@@ -75,10 +75,17 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             speed = y;
             setDriveSpeed(speed);
         }
-        else if (!(x == 0 && y == 0)) {
+        else if (!(x == 0 && y == 0) && omega == 0) {
 
             double theta   = Math.atan2(y, x);
             double heading = 90 - theta * 180 / Math.PI;
+
+            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
+
+            if ((heading - frontLeft.getAngle()) > 90 && (heading - frontLeft.getAngle()) < 270) {
+                heading -= 180;
+                speed    = -speed;
+            }
 
             if (heading < 0) {
                 heading += 360.0;
@@ -89,9 +96,41 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             turnToAngle(heading);
-
-            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
             setDriveSpeed(speed);
+        }
+        else if (omega != 0) {
+            frontRight.turnToAngle(135);
+            frontLeft.turnToAngle(45);
+            backRight.turnToAngle(225);
+            backLeft.turnToAngle(315);
+
+            setDriveSpeed(omega);
+        }
+        else if (!(x == 0 && y == 0 && omega == 0)) {
+            double fl_x = x + Math.cos(45) * omega;
+            double fl_y = y + Math.sin(45) * omega;
+
+            double fr_x = x + Math.cos(135) * omega;
+            double fr_y = y + Math.sin(135) * omega;
+
+            double bl_x = x + Math.cos(315) * omega;
+            double bl_y = y + Math.sin(315) * omega;
+
+            double br_x = x + Math.cos(225) * omega;
+            double br_y = y + Math.sin(225) * omega;
+
+            frontLeft.setDriveSpeed((Math.pow(fl_x * fl_x + fl_y * fl_y, .5)) % 1.0);
+            frontLeft.turnToAngle(Math.atan2(fl_y, fl_x) * 180 / Math.PI);
+
+            frontRight.setDriveSpeed((Math.pow(fr_x * fr_x + fr_y * fr_y, .5)) % 1.0);
+            frontRight.turnToAngle(Math.atan2(fr_y, fr_x) * 180 / Math.PI);
+
+            backLeft.setDriveSpeed((Math.pow(bl_x * bl_x + bl_y * bl_y, .5)) % 1.0);
+            backLeft.turnToAngle(Math.atan2(bl_y, bl_x) * 180 / Math.PI);
+
+            backRight.setDriveSpeed((Math.pow(br_x * br_x + br_y * br_y, .5)) % 1.0);
+            backRight.turnToAngle(Math.atan2(br_y, br_x) * 180 / Math.PI);
+
         }
         else {
             setTurnSpeed(0);
