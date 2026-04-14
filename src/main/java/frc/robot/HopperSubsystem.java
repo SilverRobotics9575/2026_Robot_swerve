@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class HopperSubsystem extends SubsystemBase {
 
-    private SparkMax leftShooterMotor;
-    private SparkMax rightShooterMotor;
+    private SparkMax  leftShooterMotor;
+    private SparkMax  rightShooterMotor;
 
     private SparkFlex beltMotor;
 
@@ -46,7 +46,7 @@ public class HopperSubsystem extends SubsystemBase {
         sparkMaxConfig.inverted(true);
         rightShooterMotor.configure(sparkMaxConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        beltMotor = new SparkFlex(10, MotorType.kBrushless);
+        beltMotor = new SparkFlex(8, MotorType.kBrushless);
 
         SparkFlexConfig sparkFlexConfig = new SparkFlexConfig();
         sparkFlexConfig.encoder.velocityConversionFactor(1.0);
