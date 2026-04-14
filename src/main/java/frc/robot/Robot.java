@@ -131,7 +131,15 @@ public class Robot extends TimedRobot {
         /*
          * Hopper Controls
          */
-        hopperSubsystem.setBeltSpeed(kDefaultPeriod);
+        // FIXME: validate hopper controls
+        if (operatorController.getYButton()) {
+            hopperSubsystem.setShooterSpeed(.65);
+        }
+        else {
+            hopperSubsystem.setShooterSpeed(operatorController.getRightY());
+        }
+
+        hopperSubsystem.setBeltSpeed(operatorController.getLeftY());
     }
 
     /** This function is called once when the robot is disabled. */
