@@ -123,6 +123,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         }
     }
 
+    public void angleLock(double speed) {
+        // this is important to the driver, locks the angle and takes speed from L stick
+        setTurnSpeed(0);
+        setDriveSpeed(speed);
+
+    }
+
     public void clam() {
 
         // If clam is active, the drive is locked in an X pattern and the robot is stopped

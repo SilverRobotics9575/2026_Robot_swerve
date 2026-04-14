@@ -88,6 +88,9 @@ public class Robot extends TimedRobot {
         if (driverController.getRightBumperButton()) {
             swerveDriveSubsystem.clam();
         }
+        else if (driverController.getBButton()) {
+            swerveDriveSubsystem.angleLock(driverController.getLeftY());
+        }
         else {
             swerveDriveSubsystem.drive(
                 driverController.getLeftX(),
