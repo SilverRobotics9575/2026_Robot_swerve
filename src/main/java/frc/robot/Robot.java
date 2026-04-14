@@ -66,8 +66,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // js call the climb subsystem
-        climberSubsystem.climb(gameController.getLeftTriggerAxis(), gameController.getRightTriggerAxis(),
-            gameController.getBButton());
 
         // what part of the drive subsystem to call
         if (gameController.getRightBumperButton()) {
