@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
         driverController     = new GameController(0);
-        operatorController   = new GameController(0);
+        operatorController   = new GameController(1);
 
         swerveDriveSubsystem = new SwerveDriveSubsystem();
         climbSubsystem       = new ClimbSubsystem();
@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+
         swerveDriveSubsystem.periodic();
         climbSubsystem.periodic();
         hopperSubsystem.periodic();
@@ -91,8 +92,7 @@ public class Robot extends TimedRobot {
             swerveDriveSubsystem.drive(
                 driverController.getLeftX(),
                 driverController.getLeftY(),
-                driverController.getRightX(),
-                driverController.getBButton());
+                driverController.getRightX());
         }
 
         /*

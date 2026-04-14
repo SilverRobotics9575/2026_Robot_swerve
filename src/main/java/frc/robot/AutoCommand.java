@@ -105,7 +105,9 @@ public class AutoCommand {
             return;
 
         case MOVE_TO_SHOOT:
+
             swerveDriveSubsystem.setDriveSpeed(0.2);
+            swerveDriveSubsystem.setWheelAngle(180);
 
             if (Math.abs(swerveDriveSubsystem.getDistanceInches()) >= 20) {
                 swerveDriveSubsystem.setDriveSpeed(0);
@@ -115,6 +117,7 @@ public class AutoCommand {
             return;
 
         case SHOOT:
+
             hopperSubsystem.setShooterSpeed(1.0);
             if (stepTimer.hasElapsed(0.5)) {
                 hopperSubsystem.setBeltSpeed(1);
@@ -138,6 +141,7 @@ public class AutoCommand {
             }
             else {
                 swerveDriveSubsystem.setDriveSpeed(0.2);
+                swerveDriveSubsystem.setWheelAngle(180);
             }
 
             if (climbSubsystem.getClimbPositionInches() >= 10) {
@@ -154,6 +158,7 @@ public class AutoCommand {
             return;
 
         case CLIMB:
+
             climbSubsystem.setSpeed(-0.8);
             if (climbSubsystem.getClimbPositionInches() <= 8) {
                 climbSubsystem.setSpeed(0);

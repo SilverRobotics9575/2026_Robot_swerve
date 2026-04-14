@@ -60,13 +60,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("SwerveDistance (in)", getDistanceInches());
     }
 
-    private void setTurnSpeed(double speed) {
-        frontRight.setTurnSpeed(speed);
-        frontLeft.setTurnSpeed(speed);
-        backRight.setTurnSpeed(speed);
-        backLeft.setTurnSpeed(speed);
-    }
-
     public void setDriveSpeed(double speed) {
         frontRight.setDriveSpeed(speed);
         frontLeft.setDriveSpeed(speed);
@@ -74,19 +67,29 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.setDriveSpeed(speed);
     }
 
-    private void turnToAngle(double heading) {
-        frontRight.turnToAngle(heading);
-        frontLeft.turnToAngle(heading);
-        backRight.turnToAngle(heading);
-        backLeft.turnToAngle(heading);
+    public void setWheelAngle(double angle) {
+        frontRight.turnToAngle(angle);
+        frontLeft.turnToAngle(angle);
+        backRight.turnToAngle(angle);
+        backLeft.turnToAngle(angle);
     }
 
-    public void drive(double x, double y, double omega, boolean angleLock) {
+    private void setTurnSpeed(double speed) {
+        frontRight.setTurnSpeed(speed);
+        frontLeft.setTurnSpeed(speed);
+        backRight.setTurnSpeed(speed);
+        backLeft.setTurnSpeed(speed);
+    }
+
+    public void drive(double x, double y, double omega) {
 
         double speed;
 
         if (!(x == 0 && y == 0)) {
 
+            // Driving is a priority. If the x or y drive vectors are
+            // non zero, then use the magnitude and angle to drive
+            // without spinning
             double theta   = Math.atan2(y, x);
             double heading = 90 - theta * 180 / Math.PI;
 
@@ -98,12 +101,15 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 heading -= 360.0;
             }
 
-            turnToAngle(heading);
+            setWheelAngle(heading);
 
             speed = (Math.pow(x * x + y * y, .5)) % 1.0;
             setDriveSpeed(speed);
+
         }
         else if (omega != 0) {
+
+            // If the robot spin is input, then spin
             frontRight.turnToAngle(135);
             frontLeft.turnToAngle(45);
             backRight.turnToAngle(225);
@@ -111,33 +117,23 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
             setDriveSpeed(omega);
         }
-        else if (angleLock) {
-            setTurnSpeed(0);
-            speed = y;
-            setDriveSpeed(speed);
-        }
         else {
             setTurnSpeed(0);
-            speed = (Math.pow(x * x + y * y, .5)) % 1.0;
-            setDriveSpeed(speed);
+            setDriveSpeed(0);
         }
     }
 
-
     public void clam() {
 
-        // FIXME If the clam is active, should the drive speed be zero?
-        // If clam is active, drive speed is given by the right stick
-        // This allows the robot to spin in place, (also currently the only way to spin)
+        // If clam is active, the drive is locked in an X pattern and the robot is stopped
 
-        frontRight.turnToAngle(225);
         frontLeft.turnToAngle(135);
-        backRight.turnToAngle(315);
+        frontRight.turnToAngle(225);
+
         backLeft.turnToAngle(45);
+        backRight.turnToAngle(315);
 
         setDriveSpeed(0);
-
-
     }
 
     public void setGyroAngle(double angle) {
@@ -175,12 +171,4 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         backLeft.resetDistanceEncoder();
         backRight.resetDistanceEncoder();
     }
-
-    public void setWheelAngle(double angle) {
-        frontRight.turnToAngle(angle);
-        frontLeft.turnToAngle(angle);
-        backRight.turnToAngle(angle);
-        backLeft.turnToAngle(angle);
-    }
-
 }
