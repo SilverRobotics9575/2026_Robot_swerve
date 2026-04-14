@@ -10,6 +10,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
@@ -113,8 +114,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         else if (angleLock) {
             setTurnSpeed(0);
             speed = y;
+            setDriveSpeed(speed);
         }
         else {
+            setTurnSpeed(0);
             speed = (Math.pow(x * x + y * y, .5)) % 1.0;
             setDriveSpeed(speed);
         }

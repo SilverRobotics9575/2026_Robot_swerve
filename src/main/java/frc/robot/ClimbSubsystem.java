@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.climbConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -64,7 +65,8 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public double getClimbPositionInches() {
-        return Math.PI * 0.5 * 0.01 * (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getPosition()) / 2.0;
+        return Math.PI * 0.5 / climbConstants.CLIMB_GEAR_RATIO
+            * (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getPosition()) / 2.0;
     }
 
     public void setSpeed(double speed) {
