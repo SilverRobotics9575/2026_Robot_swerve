@@ -98,15 +98,16 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             turnToAngle(heading);
             setDriveSpeed(speed);
         }
-        else if (omega != 0) {
-            frontRight.turnToAngle(135);
-            frontLeft.turnToAngle(45);
-            backRight.turnToAngle(225);
-            backLeft.turnToAngle(315);
+        // else if (omega != 0) {
+        // frontRight.turnToAngle(135);
+        // frontLeft.turnToAngle(45);
+        // backRight.turnToAngle(225);
+        // backLeft.turnToAngle(315);
 
-            setDriveSpeed(omega);
-        }
-        else if (!(x == 0 && y == 0 && omega == 0)) {
+        // setDriveSpeed(omega);
+        // }
+        // else if (!(x == 0 && y == 0 && omega == 0)) {
+        else if (omega != 0) {
             double fl_x = x + Math.cos(45) * omega;
             double fl_y = y + Math.sin(45) * omega;
 
